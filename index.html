@@ -44,9 +44,8 @@
         }
 
         .logo {
-            font-size: 2.5rem;
-            font-weight: 7000;
-            color: #1a1a1a;
+            height: 70px;
+            width: auto;
         }
 
         .nav-cta {
@@ -416,7 +415,8 @@
             }
             
             .logo {
-                font-size: 1.25rem;
+                height: 50px;
+                width: auto;
             }
             
             .nav-cta {
@@ -481,7 +481,33 @@
 <body>
     <nav class="navbar">
         <div class="nav-content">
-            <div class="logo">Perrigo Rentals</div>
+            <svg class="logo" width="250" height="80" viewBox="0 0 250 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Background rectangle for visual separation and rounded corners -->
+              <rect x="0" y="0" width="250" height="80" fill="#F3F4F6" rx="8"/>
+
+              <!-- Main text for "PERRIGO" -->
+              <text x="15" y="45" font-family="Inter, sans-serif" font-size="30" font-weight="bold" fill="#1F2937">PERRIGO</text>
+
+              <!-- Smaller text for "RENTALS" -->
+              <text x="15" y="68" font-family="Inter, sans-serif" font-size="18" fill="#4B5563">RENTALS</text>
+
+              <!-- Group for the house and paintbrush icon to easily position them together -->
+              <g transform="translate(160, 20)">
+                <!-- House icon -->
+                <path d="M15 0 L30 15 V40 H0 V15 L15 0Z" fill="#3B82F6"/>
+                <rect x="12" y="25" width="6" height="10" fill="#BFDBFE"/> <!-- Door -->
+
+                <!-- Paintbrush icon: Wider head, shifted up -->
+                <g transform="translate(0, -15) rotate(-20 40 35)">
+                  <!-- Brush handle -->
+                  <rect x="35" y="25" width="5" height="20" rx="1" fill="#4B5563"/>
+                  <!-- Ferrule (metal part) - wider and slightly repositioned -->
+                  <rect x="32.5" y="45" width="10" height="3" fill="#A0A0A0"/>
+                  <!-- Brush bristles - wider and slightly repositioned -->
+                  <path d="M32.5 48 L42.5 48 L45.5 53 L29.5 53 L32.5 48 Z" fill="#000000"/>
+                </g>
+              </g>
+            </svg>
             <a href="https://calendar.app.google/9wXxz9eRLjzAdgbSA" class="nav-cta" target="_blank">Schedule Tour</a>
         </div>
     </nav>
@@ -579,15 +605,15 @@
                 <div class="detail-grid">
                     <div class="detail-row">
                         <span class="detail-label">New Floors</span>
-                        <span class="detail-value">Brand New Laminate Flooring</span>
+                        <span class="detail-value">New Laminate Flooring</span>
                     </div>
 					<div class="detail-row">
                         <span class="detail-label">Kitchen Appliances</span>
-                        <span class="detail-value">Brand New Stainless Steel</span>
+                        <span class="detail-value">New Stainless Steel</span>
                     </div>
 					<div class="detail-row">
                         <span class="detail-label">Kitchen Sink</span>
-                        <span class="detail-value">Brand New Stainless Steel Deep Kitchen Sink</span>
+                        <span class="detail-value">New Stainless Steel Deep Sink</span>
                     </div>
 					<div class="detail-row">
                         <span class="detail-label">Countertops</span>
@@ -607,15 +633,15 @@
                     </div>
 					<div class="detail-row">
                         <span class="detail-label">Utility Sink</span>
-                        <span class="detail-value">Stainless Steel Utility Sink in Laundry</span>
+                        <span class="detail-value">Stainless Steel in Laundry</span>
                     </div>
 					<div class="detail-row">
                         <span class="detail-label">Primary Bedroom</span>
-                        <span class="detail-value">Configurable Racking Walk-In Closet</span>
+                        <span class="detail-value">Walk-In Closet</span>
                     </div>
 					<div class="detail-row">
                         <span class="detail-label">Primary Bedroom</span>
-                        <span class="detail-value">New Slider with Deck Access</span>
+                        <span class="detail-value">New Deck Access Slider</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Lighting</span>
