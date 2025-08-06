@@ -66,7 +66,8 @@
         .hero-section {
             margin-top: 92px;
             padding: 80px 0;
-            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            background: linear-gradient(135deg, rgba(45, 55, 72, 0.9) 0%, rgba(26, 32, 44, 0.9) 100%), 
+                        url('images/hero/hero-background.jpg') center/cover;
             color: white;
             position: relative;
             overflow: hidden;
@@ -191,23 +192,132 @@
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            font-weight: 500;
+            align-items: flex-end;
+            justify-content: flex-start;
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
         }
 
         .gallery-item:hover {
             transform: scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .gallery-item span {
+            position: relative;
+            z-index: 2;
+            padding: 20px;
         }
 
         .gallery-item:first-child {
             grid-column: span 2;
             grid-row: span 2;
-            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            font-size: 1.5rem;
+        }
+
+        /* Image backgrounds for gallery items */
+        .gallery-item.living-room {
+            background: url('images/gallery/living-room-1.jpg') center/cover;
+        }
+
+        .gallery-item.kitchen {
+            background: url('images/gallery/kitchen-1.jpg') center/cover;
+        }
+
+        .gallery-item.master-suite {
+            background: url('images/gallery/master-bedroom.jpg') center/cover;
+        }
+
+        .gallery-item.bathroom {
+            background: url('images/gallery/bathroom.jpg') center/cover;
+        }
+
+        .gallery-item.outdoor {
+            background: url('images/gallery/outdoor-space.jpg') center/cover;
+        }
+
+        /* Lightbox styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .lightbox img {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
             color: white;
-            font-size: 1.25rem;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            z-index: 2001;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .lightbox-prev {
+            left: -60px;
+        }
+
+        .lightbox-next {
+            right: -60px;
         }
 
         .details-section {
@@ -475,6 +585,20 @@
                 max-width: 300px;
                 justify-content: center;
             }
+
+            .lightbox-nav {
+                position: fixed;
+                top: auto;
+                bottom: 20px;
+            }
+
+            .lightbox-prev {
+                left: 20px;
+            }
+
+            .lightbox-next {
+                right: 20px;
+            }
         }
     </style>
 </head>
@@ -482,28 +606,14 @@
     <nav class="navbar">
         <div class="nav-content">
             <svg class="logo" width="250" height="80" viewBox="0 0 250 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Background rectangle for visual separation and rounded corners -->
-              <!--rect x="0" y="0" width="250" height="80" fill="#F3F4F6" rx="8"/-->
-
-              <!-- Main text for "PERRIGO" -->
               <text x="15" y="45" font-family="Inter, sans-serif" font-size="30" font-weight="bold" fill="#1F2937">PERRIGO</text>
-
-              <!-- Smaller text for "RENTALS" -->
               <text x="15" y="68" font-family="Inter, sans-serif" font-size="18" fill="#4B5563">RENTALS</text>
-
-              <!-- Group for the house and paintbrush icon to easily position them together -->
               <g transform="translate(160, 20)">
-                <!-- House icon -->
                 <path d="M15 0 L30 15 V40 H0 V15 L15 0Z" fill="#3B82F6"/>
-                <rect x="12" y="25" width="6" height="10" fill="#BFDBFE"/> <!-- Door -->
-
-                <!-- Paintbrush icon: Wider head, shifted up -->
+                <rect x="12" y="25" width="6" height="10" fill="#BFDBFE"/>
                 <g transform="translate(0, -15) rotate(-20 40 35)">
-                  <!-- Brush handle -->
                   <rect x="35" y="25" width="5" height="20" rx="1" fill="#4B5563"/>
-                  <!-- Ferrule (metal part) - wider and slightly repositioned -->
                   <rect x="32.5" y="45" width="10" height="3" fill="#A0A0A0"/>
-                  <!-- Brush bristles - wider and slightly repositioned -->
                   <path d="M32.5 48 L42.5 48 L45.5 53 L29.5 53 L32.5 48 Z" fill="#000000"/>
                 </g>
               </g>
@@ -547,11 +657,21 @@
             </div>
             
             <div class="gallery-grid">
-                <div class="gallery-item">Living Area</div>
-                <div class="gallery-item">Kitchen</div>
-                <div class="gallery-item">Master Suite</div>
-                <div class="gallery-item">Bathroom</div>
-                <div class="gallery-item">Outdoor Space</div>
+                <div class="gallery-item living-room" data-image="images/gallery/living-room-1.jpg">
+                    <span>Living Area</span>
+                </div>
+                <div class="gallery-item kitchen" data-image="images/gallery/kitchen-1.jpg">
+                    <span>Kitchen</span>
+                </div>
+                <div class="gallery-item master-suite" data-image="images/gallery/master-bedroom.jpg">
+                    <span>Master Suite</span>
+                </div>
+                <div class="gallery-item bathroom" data-image="images/gallery/bathroom.jpg">
+                    <span>Bathroom</span>
+                </div>
+                <div class="gallery-item outdoor" data-image="images/gallery/outdoor-space.jpg">
+                    <span>Outdoor Space</span>
+                </div>
             </div>
         </section>
 
@@ -697,14 +817,21 @@
         </section>
     </main>
 
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose">&times;</button>
+            <button class="lightbox-nav lightbox-prev" id="lightboxPrev">&#8249;</button>
+            <img id="lightboxImage" src="" alt="">
+            <button class="lightbox-nav lightbox-next" id="lightboxNext">&#8250;</button>
+        </div>
+    </div>
+
     <section class="cta-section" id="contact">
         <div class="cta-content">
             <h2 class="cta-title">Ready to Call This Home?</h2>
             <p class="cta-subtitle">Don't wait – premium properties like this are in high demand. Schedule your private tour today.</p>
             <div class="cta-buttons">
-                <a href="https://calendar.app.google/9wXxz9eRLjzAdgbSA" class="btn btn-primary" target="_blank">
-                    📅 Schedule Tour
-                </a>
                 <a href="mailto:max.perrigo@gmail.com" class="btn btn-secondary">
                     ✉️ Send Message
                 </a>
@@ -713,6 +840,17 @@
     </section>
 
     <script>
+        // Gallery images array for lightbox navigation
+        const galleryImages = [
+            { src: 'images/gallery/living-room-1.jpg', alt: 'Living Area' },
+            { src: 'images/gallery/kitchen-1.jpg', alt: 'Kitchen' },
+            { src: 'images/gallery/master-bedroom.jpg', alt: 'Master Suite' },
+            { src: 'images/gallery/bathroom.jpg', alt: 'Bathroom' },
+            { src: 'images/gallery/outdoor-space.jpg', alt: 'Outdoor Space' }
+        ];
+
+        let currentImageIndex = 0;
+
         // Smooth scrolling for navigation
         document.addEventListener('DOMContentLoaded', function() {
             // Navbar scroll effect
@@ -727,17 +865,72 @@
                 }
             });
 
-            // Gallery item interactions
+            // Lightbox functionality
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxClose = document.getElementById('lightboxClose');
+            const lightboxPrev = document.getElementById('lightboxPrev');
+            const lightboxNext = document.getElementById('lightboxNext');
+
+            // Gallery item interactions with lightbox
             const galleryItems = document.querySelectorAll('.gallery-item');
-            galleryItems.forEach(item => {
+            galleryItems.forEach((item, index) => {
                 item.addEventListener('click', function() {
-                    // Add click animation
-                    this.style.transform = 'scale(0.98)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
+                    currentImageIndex = index;
+                    showLightbox(galleryImages[currentImageIndex]);
                 });
             });
+
+            // Lightbox controls
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightboxPrev.addEventListener('click', showPrevImage);
+            lightboxNext.addEventListener('click', showNextImage);
+            
+            // Close lightbox when clicking outside image
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (lightbox.classList.contains('active')) {
+                    switch(e.key) {
+                        case 'Escape':
+                            closeLightbox();
+                            break;
+                        case 'ArrowLeft':
+                            showPrevImage();
+                            break;
+                        case 'ArrowRight':
+                            showNextImage();
+                            break;
+                    }
+                }
+            });
+
+            function showLightbox(image) {
+                lightboxImage.src = image.src;
+                lightboxImage.alt = image.alt;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+
+            function showPrevImage() {
+                currentImageIndex = currentImageIndex > 0 ? currentImageIndex - 1 : galleryImages.length - 1;
+                showLightbox(galleryImages[currentImageIndex]);
+            }
+
+            function showNextImage() {
+                currentImageIndex = currentImageIndex < galleryImages.length - 1 ? currentImageIndex + 1 : 0;
+                showLightbox(galleryImages[currentImageIndex]);
+            }
 
             // Intersection Observer for animations
             const observerOptions = {
@@ -771,7 +964,18 @@
                 card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
                 observer.observe(card);
             });
+
+            // Animate gallery items on scroll
+            galleryItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'scale(0.9)';
+                item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(item);
+            });
         });
     </script>
 </body>
-</html>
+</html>https://calendar.app.google/9wXxz9eRLjzAdgbSA" class="btn btn-primary" target="_blank">
+                    📅 Schedule Tour
+                </a>
+                <a href="
