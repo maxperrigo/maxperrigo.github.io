@@ -66,7 +66,7 @@
         .hero-section {
             margin-top: 92px;
             padding: 80px 0;
-            background: linear-gradient(135deg, rgba(45, 55, 72, 0.4) 0%, rgba(26, 32, 44, 0.5) 100%), 
+            background: linear-gradient(135deg, rgba(45, 55, 72, 0.3) 0%, rgba(26, 32, 44, 0.4) 100%), 
                         url('images/hero/hero-background.jpg') center/cover;
             color: white;
             position: relative;
@@ -964,17 +964,24 @@
 
             async discoverImages() {
                 const discoveredImages = [];
-                const foundImagePaths = new Set(); // Prevent duplicates during discovery
+                const foundImagePaths = new Set();
                 
-                // Try to find images using common naming patterns
-                for (const imageName of this.commonImageNames) {
+                console.log('🔍 Starting optimized image discovery...');
+                
+                // Prioritize common image patterns for faster discovery
+                const priorityPatterns = [
+                    '01-living-room-main', '02-kitchen-overview', '03-master-bedroom',
+                    'living-room-1', 'kitchen-1', 'bedroom-1', 'exterior-front'
+                ];
+                
+                // Check priority images first
+                for (const imageName of priorityPatterns) {
+                    if (discoveredImages.length >= 8) break; // Limit initial load
+                    
                     for (const extension of this.imageExtensions) {
                         const imagePath = `${this.galleryPath}${imageName}.${extension}`;
                         
-                        // Skip if we already found this exact path
-                        if (foundImagePaths.has(imagePath)) {
-                            continue;
-                        }
+                        if (foundImagePaths.has(imagePath)) continue;
                         
                         try {
                             const exists = await this.imageExists(imagePath);
@@ -982,36 +989,103 @@
                                 const imageData = this.createImageData(imagePath, imageName);
                                 discoveredImages.push(imageData);
                                 foundImagePaths.add(imagePath);
-                                console.log('✅ Found:', imagePath);
-                                break; // Stop checking other extensions for this name
+                                console.log('✅ Priority found:', imagePath);
+                                break;
                             }
                         } catch (error) {
-                            // Silently continue - this is expected for most attempts
+                            // Continue to next
                         }
                     }
                 }
-
-                // Sort images by their filename for consistent ordering
+                
+                // Load remaining images in background
+                setTimeout(() => this.loadRemainingImages(discoveredImages, foundImagePaths), 100);
+                
+                // Sort initial images
                 this.galleryImages = discoveredImages.sort((a, b) => a.src.localeCompare(b.src));
                 
-                // Ensure only one featured image
-                const featuredImages = this.galleryImages.filter(img => img.featured);
-                if (featuredImages.length > 1) {
-                    // Keep only the first featured image
-                    this.galleryImages.forEach((img, index) => {
-                        if (img.featured && index > 0) {
-                            img.featured = false;
-                        }
-                    });
-                }
-
                 if (this.galleryImages.length === 0) {
                     this.showNoImagesMessage();
                 } else {
-                    console.log(`🎉 Discovery complete! Found ${this.galleryImages.length} unique images`);
+                    console.log(`🎉 Initial load: ${this.galleryImages.length} priority images`);
                     this.renderGallery();
                     this.hideLoading();
                 }
+            }
+
+            async loadRemainingImages(existingImages, foundPaths) {
+                console.log('⏳ Loading remaining images in background...');
+                
+                for (const imageName of this.commonImageNames) {
+                    for (const extension of this.imageExtensions) {
+                        const imagePath = `${this.galleryPath}${imageName}.${extension}`;
+                        
+                        if (foundPaths.has(imagePath)) continue;
+                        
+                        try {
+                            const exists = await this.imageExists(imagePath);
+                            if (exists) {
+                                const imageData = this.createImageData(imagePath, imageName);
+                                this.galleryImages.push(imageData);
+                                foundPaths.add(imagePath);
+                                
+                                // Add new image to gallery dynamically
+                                this.addImageToGallery(imageData, this.galleryImages.length - 1);
+                                console.log('✅ Background loaded:', imagePath);
+                                break;
+                            }
+                        } catch (error) {
+                            // Continue
+                        }
+                        
+                        // Small delay to prevent blocking
+                        await new Promise(resolve => setTimeout(resolve, 50));
+                    }
+                }
+                
+                console.log(`🎊 All loading complete: ${this.galleryImages.length} total images`);
+            }
+
+            addImageToGallery(imageData, index) {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = `gallery-item ${imageData.featured ? 'featured' : ''}`;
+                galleryItem.style.opacity = '0';
+                galleryItem.style.transform = 'translateY(30px)';
+                galleryItem.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+
+                const img = document.createElement('img');
+                img.src = imageData.src;
+                img.alt = imageData.title;
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                
+                img.onerror = () => {
+                    console.error(`Failed to load image: ${imageData.src}`);
+                    galleryItem.style.display = 'none';
+                };
+
+                const overlay = document.createElement('div');
+                overlay.className = 'overlay';
+
+                const title = document.createElement('div');
+                title.className = 'title';
+                title.textContent = imageData.title;
+
+                overlay.appendChild(title);
+                galleryItem.appendChild(img);
+                galleryItem.appendChild(overlay);
+
+                galleryItem.addEventListener('click', () => {
+                    this.openLightbox(this.galleryImages.findIndex(img => img.src === imageData.src));
+                });
+
+                this.galleryGrid.appendChild(galleryItem);
+
+                // Animate in
+                setTimeout(() => {
+                    galleryItem.style.opacity = '1';
+                    galleryItem.style.transform = 'translateY(0)';
+                }, 100);
             }
 
             imageExists(src) {
@@ -1019,8 +1093,23 @@
                     const img = new Image();
                     img.onload = () => resolve(true);
                     img.onerror = () => resolve(false);
-                    // Set a timeout to avoid hanging
-                    setTimeout(() => resolve(false), 3000);
+                    
+                    // Reduced timeout for faster failures
+                    const timeout = setTimeout(() => {
+                        img.onload = img.onerror = null;
+                        resolve(false);
+                    }, 1500); // Reduced from 3000ms
+                    
+                    img.onload = () => {
+                        clearTimeout(timeout);
+                        resolve(true);
+                    };
+                    
+                    img.onerror = () => {
+                        clearTimeout(timeout);
+                        resolve(false);
+                    };
+                    
                     img.src = src;
                 });
             }
