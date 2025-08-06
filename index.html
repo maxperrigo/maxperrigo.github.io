@@ -66,7 +66,7 @@
         .hero-section {
             margin-top: 92px;
             padding: 80px 0;
-            background: linear-gradient(135deg, rgba(45, 55, 72, 0.3) 0%, rgba(26, 32, 44, 0.4) 100%), 
+            background: linear-gradient(135deg, rgba(45, 55, 72, 0.9) 0%, rgba(26, 32, 44, 0.9) 100%), 
                         url('images/hero/hero-background.jpg') center/cover;
             color: white;
             position: relative;
@@ -199,10 +199,22 @@
 
         .gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             opacity: 0;
             transition: opacity 0.5s ease;
+        }
+
+        /* Ensure consistent grid behavior */
+        @media (min-width: 769px) {
+            .gallery-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .gallery-grid.has-featured {
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: masonry;
+            }
         }
 
         .gallery-grid.loaded {
@@ -952,18 +964,26 @@
 
             async discoverImages() {
                 const discoveredImages = [];
+                const foundImagePaths = new Set(); // Prevent duplicates during discovery
                 
                 // Try to find images using common naming patterns
                 for (const imageName of this.commonImageNames) {
                     for (const extension of this.imageExtensions) {
                         const imagePath = `${this.galleryPath}${imageName}.${extension}`;
                         
+                        // Skip if we already found this exact path
+                        if (foundImagePaths.has(imagePath)) {
+                            continue;
+                        }
+                        
                         try {
                             const exists = await this.imageExists(imagePath);
                             if (exists) {
                                 const imageData = this.createImageData(imagePath, imageName);
                                 discoveredImages.push(imageData);
+                                foundImagePaths.add(imagePath);
                                 console.log('✅ Found:', imagePath);
+                                break; // Stop checking other extensions for this name
                             }
                         } catch (error) {
                             // Silently continue - this is expected for most attempts
@@ -973,11 +993,22 @@
 
                 // Sort images by their filename for consistent ordering
                 this.galleryImages = discoveredImages.sort((a, b) => a.src.localeCompare(b.src));
+                
+                // Ensure only one featured image
+                const featuredImages = this.galleryImages.filter(img => img.featured);
+                if (featuredImages.length > 1) {
+                    // Keep only the first featured image
+                    this.galleryImages.forEach((img, index) => {
+                        if (img.featured && index > 0) {
+                            img.featured = false;
+                        }
+                    });
+                }
 
                 if (this.galleryImages.length === 0) {
                     this.showNoImagesMessage();
                 } else {
-                    console.log(`🎉 Discovery complete! Found ${this.galleryImages.length} images`);
+                    console.log(`🎉 Discovery complete! Found ${this.galleryImages.length} unique images`);
                     this.renderGallery();
                     this.hideLoading();
                 }
@@ -1084,8 +1115,24 @@
 
             renderGallery() {
                 this.galleryGrid.innerHTML = '';
+                
+                // Add class to indicate if we have featured images
+                const hasFeatured = this.galleryImages.some(img => img.featured);
+                if (hasFeatured) {
+                    this.galleryGrid.classList.add('has-featured');
+                }
+
+                // Create a Set to track rendered images and prevent duplicates
+                const renderedImages = new Set();
 
                 this.galleryImages.forEach((imageData, index) => {
+                    // Prevent duplicate rendering
+                    if (renderedImages.has(imageData.src)) {
+                        console.warn(`Skipping duplicate image: ${imageData.src}`);
+                        return;
+                    }
+                    renderedImages.add(imageData.src);
+
                     const galleryItem = document.createElement('div');
                     galleryItem.className = `gallery-item ${imageData.featured ? 'featured' : ''}`;
                     galleryItem.style.opacity = '0';
@@ -1096,6 +1143,12 @@
                     img.src = imageData.src;
                     img.alt = imageData.title;
                     img.loading = 'lazy';
+                    
+                    // Add error handling for images
+                    img.onerror = () => {
+                        console.error(`Failed to load image: ${imageData.src}`);
+                        galleryItem.style.display = 'none';
+                    };
 
                     const overlay = document.createElement('div');
                     overlay.className = 'overlay';
@@ -1125,6 +1178,8 @@
                 setTimeout(() => {
                     this.galleryGrid.classList.add('loaded');
                 }, 500);
+                
+                console.log(`✅ Rendered ${renderedImages.size} unique images`);
             }
 
             hideLoading() {
