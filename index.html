@@ -66,7 +66,7 @@
         .hero-section {
             margin-top: 92px;
             padding: 80px 0;
-            background: linear-gradient(135deg, rgba(45, 55, 72, 0.3) 0%, rgba(26, 32, 44, 0.4) 100%), 
+            background: linear-gradient(135deg, rgba(45, 55, 72, 0.4) 0%, rgba(26, 32, 44, 0.5) 100%), 
                         url('images/hero/hero-background.jpg') center/cover;
             color: white;
             position: relative;
@@ -897,9 +897,9 @@
                 <a href="https://calendar.app.google/9wXxz9eRLjzAdgbSA" class="btn btn-primary" target="_blank">
                     📅 Schedule Tour
                 </a>
-                <a href="mailto:max.perrigo@gmail.com" class="btn btn-secondary">
+                <div class="btn btn-secondary" id="emailButton">
                     ✉️ Send Message
-                </a>
+                </div>
             </div>
         </div>
     </section>
@@ -1323,7 +1323,170 @@
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             new AutoGallery();
+            setupEmailButton();
         });
+
+        // Enhanced email button functionality
+        function setupEmailButton() {
+            const emailButton = document.getElementById('emailButton');
+            
+            emailButton.addEventListener('click', function() {
+                showEmailOptions();
+            });
+        }
+
+        function showEmailOptions() {
+            // Create modal overlay
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 3000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            `;
+
+            // Create modal content
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: white;
+                border-radius: 16px;
+                padding: 40px;
+                max-width: 500px;
+                width: 100%;
+                text-align: center;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            `;
+
+            modalContent.innerHTML = `
+                <h3 style="margin-bottom: 20px; color: #1a1a1a; font-size: 1.5rem;">Contact Max Perrigo</h3>
+                <p style="margin-bottom: 30px; color: #666; line-height: 1.6;">Choose your preferred way to get in touch:</p>
+                
+                <div style="display: grid; gap: 15px; margin-bottom: 30px;">
+                    <button onclick="window.location.href='mailto:max.perrigo@gmail.com'" 
+                            style="background: #2d3748; color: white; padding: 15px 25px; border-radius: 8px; border: none; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background 0.2s ease;"
+                            onmouseover="this.style.background='#4a5568'" 
+                            onmouseout="this.style.background='#2d3748'">
+                        📧 Open Email App
+                    </button>
+                    
+                    <button onclick="copyEmailToClipboard()" 
+                            style="background: #f8f9fa; color: #2d3748; padding: 15px 25px; border-radius: 8px; border: 2px solid #e9ecef; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.2s ease;"
+                            onmouseover="this.style.background='#e9ecef'" 
+                            onmouseout="this.style.background='#f8f9fa'">
+                        📋 Copy Email Address
+                    </button>
+                    
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=max.perrigo@gmail.com&su=Rental%20Property%20Inquiry&body=Hi%20Max,%0D%0A%0D%0AI'm%20interested%20in%20learning%20more%20about%20your%20rental%20property.%0D%0A%0D%0APlease%20contact%20me%20at%20your%20earliest%20convenience.%0D%0A%0D%0AThank%20you!" 
+                       target="_blank"
+                       style="background: #4285f4; color: white; padding: 15px 25px; border-radius: 8px; text-decoration: none; font-size: 1rem; font-weight: 500; transition: background 0.2s ease; display: block;"
+                       onmouseover="this.style.background='#3367d6'" 
+                       onmouseout="this.style.background='#4285f4'">
+                        📮 Gmail (Web)
+                    </a>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <strong style="color: #2d3748;">Email:</strong> 
+                    <span style="color: #2d3748; font-weight: 500; font-size: 1.1rem;">max.perrigo@gmail.com</span>
+                </div>
+                
+                <button onclick="closeEmailModal()" 
+                        style="background: #e9ecef; color: #666; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.9rem;">
+                    Cancel
+                </button>
+            `;
+
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+
+            // Add click outside to close
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeEmailModal();
+                }
+            });
+
+            // Store reference for closing
+            window.currentEmailModal = modal;
+        }
+
+        function copyEmailToClipboard() {
+            const email = 'max.perrigo@gmail.com';
+            
+            // Modern clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(email).then(function() {
+                    showCopySuccess();
+                }).catch(function(err) {
+                    fallbackCopyTextToClipboard(email);
+                });
+            } else {
+                // Fallback for older browsers
+                fallbackCopyTextToClipboard(email);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess();
+                } else {
+                    showCopyError();
+                }
+            } catch (err) {
+                showCopyError();
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showCopySuccess() {
+            // Update the copy button to show success
+            const modal = window.currentEmailModal;
+            if (modal) {
+                const copyButton = modal.querySelector('button[onclick="copyEmailToClipboard()"]');
+                if (copyButton) {
+                    const originalText = copyButton.innerHTML;
+                    copyButton.innerHTML = '✅ Email Copied!';
+                    copyButton.style.background = '#10b981';
+                    copyButton.style.color = 'white';
+                    
+                    setTimeout(() => {
+                        copyButton.innerHTML = originalText;
+                        copyButton.style.background = '#f8f9fa';
+                        copyButton.style.color = '#2d3748';
+                    }, 2000);
+                }
+            }
+        }
+
+        function showCopyError() {
+            alert('Unable to copy email. Please manually copy: max.perrigo@gmail.com');
+        }
+
+        function closeEmailModal() {
+            if (window.currentEmailModal) {
+                document.body.removeChild(window.currentEmailModal);
+                window.currentEmailModal = null;
+            }
+        }
     </script>
 </body>
 </html>
