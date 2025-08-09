@@ -151,6 +151,24 @@
             padding: 80px 40px;
         }
 
+        .notification-banner {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .notification-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: 0.025em;
+        }
+
         .gallery-section {
             margin-bottom: 120px;
         }
@@ -618,6 +636,15 @@
                 gap: 20px;
             }
             
+            .notification-banner {
+                padding: 16px 20px;
+                margin-bottom: 30px;
+            }
+            
+            .notification-text {
+                font-size: 1rem;
+            }
+            
             .gallery-grid {
                 grid-template-columns: 1fr;
             }
@@ -716,6 +743,10 @@
     </section>
 
     <main class="main-content">
+        <div class="notification-banner">
+            <p class="notification-text">💰 Discounts available! Inquire within to learn more!</p>
+        </div>
+        
         <section class="details-section">
             <div class="details-card">
                 <h3 class="card-title">
