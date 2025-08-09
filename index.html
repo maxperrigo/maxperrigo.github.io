@@ -974,7 +974,7 @@
                 
                 // Prioritize common image patterns for faster discovery
                 const priorityPatterns = [
-                    '01-living-room-main', '02-kitchen-overview', '03-master-bedroom',
+                    '01-front', '02-laundry', '03-bedroom', '04-bedroom',
                     'living-room-1', 'kitchen-1', 'bedroom-1', 'exterior-front'
                 ];
                 
@@ -1126,8 +1126,7 @@
                 const description = this.generateDescription(imageName);
                 
                 // Determine if this should be a featured image (first numbered image or living room)
-                const featured = imageName.includes('01-') || imageName.includes('living-room-1') || 
-                                imageName.includes('living-room-main');
+                const featured = imageName.includes('01-') || imageName.includes('01-front');
 
                 return {
                     src: imagePath,
@@ -1286,7 +1285,7 @@
                         <p style="margin-bottom: 20px;">To display your property photos, upload images to the <code>images/gallery/</code> folder.</p>
                         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: left; font-size: 0.9rem;">
                             <strong>Supported file names:</strong><br>
-                            • 01-living-room-main.jpg<br>
+                            • 01-front.jpg<br>
                             • 02-kitchen-overview.jpg<br>
                             • living-room-1.jpg<br>
                             • kitchen-1.jpg<br>
