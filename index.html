@@ -48,6 +48,11 @@
             width: auto;
         }
 
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
         .nav-cta {
             background: #1a1a1a;
             color: white;
@@ -56,6 +61,9 @@
             text-decoration: none;
             font-weight: 500;
             transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
         }
 
         .nav-cta:hover {
@@ -111,8 +119,17 @@
             font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 700;
             line-height: 1.1;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             letter-spacing: -0.02em;
+        }
+
+        .hero-address {
+            font-size: 1.5rem;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 24px;
+            color: white;
+            letter-spacing: 0.025em;
         }
 
         .hero-subtitle {
@@ -614,9 +631,14 @@
                 width: auto;
             }
             
+            .nav-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
             .nav-cta {
-                padding: 10px 20px;
-                font-size: 0.9rem;
+                padding: 8px 16px;
+                font-size: 0.85rem;
             }
             
             .hero-section {
@@ -711,7 +733,10 @@
                 </g>
               </g>
             </svg>
-            <a href="https://calendar.app.google/9wXxz9eRLjzAdgbSA" class="nav-cta" target="_blank">Schedule Tour</a>
+            <div class="nav-buttons">
+                <a href="https://calendar.app.google/9wXxz9eRLjzAdgbSA" class="nav-cta" target="_blank">Schedule Tour</a>
+                <button class="nav-cta" id="navEmailButton">Send Message</button>
+            </div>
         </div>
     </nav>
 
@@ -719,6 +744,7 @@
         <div class="hero-content">
             <div class="hero-badge">✨ NEWLY REMODELED</div>
             <h1 class="hero-title">Modern Rambler Reimagined</h1>
+            <div class="hero-address">412 W 14th Ave</div>
             <p class="hero-subtitle">Experience premium comfort in this completely renovated home featuring state-of-the-art appliances, new flooring, heaters, and custom countertops throughout.</p>
             
             <div class="hero-stats">
@@ -735,7 +761,7 @@
                     <div class="stat-label">Sq Ft</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-number">$2,400</div>
+                    <div class="stat-number">$2,200</div>
                     <div class="stat-label">Monthly</div>
                 </div>
             </div>
@@ -756,11 +782,11 @@
                 <div class="detail-grid">
                     <div class="detail-row">
                         <span class="detail-label">Monthly Rent</span>
-                        <span class="detail-value price-highlight">$2,400</span>
+                        <span class="detail-value price-highlight">$2,200</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Security Deposit</span>
-                        <span class="detail-value">$2,400</span>
+                        <span class="detail-value">$2,200</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Square Footage</span>
@@ -773,6 +799,10 @@
                     <div class="detail-row">
                         <span class="detail-label">Bathrooms</span>
                         <span class="detail-value">1.5</span>
+                    </div>
+					<div class="detail-row">
+                        <span class="detail-label">Included Utilities</span>
+                        <span class="detail-value">Trash/Recycle</span>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Parking</span>
@@ -788,7 +818,7 @@
                     </div>
 					<div class="detail-row">
                         <span class="detail-label">Pets</span>
-                        <span class="detail-value">Conditional</span>
+                        <span class="detail-value">Conditional (Addtl Fees)</span>
                     </div>
                 </div>
             </div>
@@ -1295,12 +1325,21 @@
         document.addEventListener('DOMContentLoaded', function() {
             new AutoGallery();
             setupEmailButton();
+            setupNavEmailButton();
         });
 
         function setupEmailButton() {
             const emailButton = document.getElementById('emailButton');
             
             emailButton.addEventListener('click', function() {
+                showEmailOptions();
+            });
+        }
+
+        function setupNavEmailButton() {
+            const navEmailButton = document.getElementById('navEmailButton');
+            
+            navEmailButton.addEventListener('click', function() {
                 showEmailOptions();
             });
         }
@@ -1351,7 +1390,7 @@
                         📋 Copy Email Address
                     </button>
                     
-                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=max.perrigo@gmail.com&su=Rental%20Property%20Inquiry&body=Hi%20Max,%0D%0A%0D%0AI'm%20interested%20in%20learning%20more%20about%20your%20rental%20property.%0D%0A%0D%0APlease%20contact%20me%20at%20your%20earliest%20convenience.%0D%0A%0D%0AThank%20you!" 
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=max.perrigo@gmail.com&su=Rental%20Property%20Inquiry&body=Hi%20Max,%0D%0A%0D%0AI'm%20interested%20in%20learning%20more%20about%20your%20rental%20property%20at%20412%20W%2014th%20Ave,%20Ellensburg,%20WA%2098926.%0D%0A%0D%0APlease%20contact%20me%20at%20your%20earliest%20convenience.%0D%0A%0D%0AThank%20you!" 
                        target="_blank"
                        style="background: #4285f4; color: white; padding: 15px 25px; border-radius: 8px; text-decoration: none; font-size: 1rem; font-weight: 500; transition: background 0.2s ease; display: block;"
                        onmouseover="this.style.background='#3367d6'" 
@@ -1361,8 +1400,14 @@
                 </div>
                 
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                    <strong style="color: #2d3748;">Email:</strong> 
-                    <span style="color: #2d3748; font-weight: 500; font-size: 1.1rem;">max.perrigo@gmail.com</span>
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: #2d3748;">Email:</strong> 
+                        <span style="color: #2d3748; font-weight: 500; font-size: 1.1rem;">max.perrigo@gmail.com</span>
+                    </div>
+                    <div>
+                        <strong style="color: #2d3748;">Property Address:</strong> 
+                        <span style="color: #2d3748; font-weight: 500;">412 W 14th Ave, Ellensburg, WA 98926</span>
+                    </div>
                 </div>
                 
                 <button onclick="closeEmailModal()" 
