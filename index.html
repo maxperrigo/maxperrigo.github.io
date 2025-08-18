@@ -900,7 +900,7 @@
             
             <div class="gallery-loading" id="galleryLoading">
                 <div class="loading-spinner"></div>
-                <p>Discovering and loading gallery images...</p>
+                <p>Loading gallery images...</p>
             </div>
             
             <div class="gallery-grid" id="galleryGrid">
@@ -940,7 +940,7 @@
     </section>
 
     <script>
-        // Fully Automatic Gallery System
+        // Streamlined Gallery System
         class AutoGallery {
             constructor() {
                 this.galleryGrid = document.getElementById('galleryGrid');
@@ -954,44 +954,34 @@
                 this.galleryImages = [];
                 this.currentImageIndex = 0;
                 
-                // Auto-discovery configuration
+                // Specific image names to look for
                 this.imageExtensions = ['jpg', 'jpeg', 'png', 'webp'];
                 this.galleryPath = 'images/gallery/';
-                
-                // Common image names to try
-                this.commonImageNames = [
-                    // Numbered sequence
-                    '01-front', '02-laundry', '03-bedroom', 
-                    '04-bedroom', '05-more', '06-master-bathroom',
-                    '07-bedroom-2', '08-bathroom-2', '09-laundry-room', '10-exterior-front',
-                    '11-exterior-back', '12-outdoor-space', '13-dining-room', '14-closet',
-                    '15-garage', '16-basement', '17-attic', '18-office', '19-guest-room',
-                    '20-powder-room',
-                    
-                    // Simple names
-                    'living-room-1', 'living-room-2', 'living-room-3',
-                    'kitchen-1', 'kitchen-2', 'kitchen-3',
-                    'bedroom-1', 'bedroom-2', 'bedroom-3',
-                    'bathroom-1', 'bathroom-2', 'bathroom-3',
-                    'master-bedroom', 'master-bathroom',
-                    'dining-room', 'family-room', 'office',
-                    'laundry-room', 'utility-room', 'mudroom',
-                    'exterior-front', 'exterior-back', 'exterior-side',
-                    'backyard', 'frontyard', 'patio', 'deck',
-                    'garage', 'driveway', 'entry', 'foyer',
-                    
-                    // Generic numbered
-                    'image-1', 'image-2', 'image-3', 'image-4', 'image-5',
-                    'image-6', 'image-7', 'image-8', 'image-9', 'image-10',
-                    'photo-1', 'photo-2', 'photo-3', 'photo-4', 'photo-5',
-                    'pic-1', 'pic-2', 'pic-3', 'pic-4', 'pic-5'
+                this.specificImageNames = [
+                    '01-front',
+                    '02-living room',
+                    '03-living room',
+                    '04-living room',
+                    '05-kitchen',
+                    '06-kitchen',
+                    '07-kitchen',
+                    '08-kitchen',
+                    '09-dining',
+                    '10-hallway',
+                    '11-bathroom',
+                    '12-laundry',
+                    '13-master',
+                    '14-master',
+                    '15-bedroom',
+                    '16-small bedroom',
+                    '17-backyard'
                 ];
                 
                 this.init();
             }
 
             async init() {
-                console.log('🔍 Starting automatic image discovery...');
+                console.log('🔍 Starting image discovery...');
                 await this.discoverImages();
                 this.setupLightbox();
                 this.setupAnimations();
@@ -999,128 +989,36 @@
 
             async discoverImages() {
                 const discoveredImages = [];
-                const foundImagePaths = new Set();
                 
-                console.log('🔍 Starting optimized image discovery...');
+                console.log('🔍 Looking for specific images...');
                 
-                // Prioritize common image patterns for faster discovery
-                const priorityPatterns = [
-                    '01-front', '02-laundry', '03-bedroom', '04-bedroom', '05-more',
-                    'living-room-1', 'kitchen-1', 'bedroom-1', 'exterior-front'
-                ];
-                
-                // Check priority images first
-                for (const imageName of priorityPatterns) {
-                    if (discoveredImages.length >= 8) break; // Limit initial load
-                    
+                for (const imageName of this.specificImageNames) {
                     for (const extension of this.imageExtensions) {
                         const imagePath = `${this.galleryPath}${imageName}.${extension}`;
-                        
-                        if (foundImagePaths.has(imagePath)) continue;
                         
                         try {
                             const exists = await this.imageExists(imagePath);
                             if (exists) {
                                 const imageData = this.createImageData(imagePath, imageName);
                                 discoveredImages.push(imageData);
-                                foundImagePaths.add(imagePath);
-                                console.log('✅ Priority found:', imagePath);
-                                break;
+                                console.log('✅ Found:', imagePath);
+                                break; // Found this image, move to next name
                             }
                         } catch (error) {
-                            // Continue to next
+                            // Continue to next extension
                         }
                     }
                 }
                 
-                // Load remaining images in background
-                setTimeout(() => this.loadRemainingImages(discoveredImages, foundImagePaths), 100);
-                
-                // Sort initial images
-                this.galleryImages = discoveredImages.sort((a, b) => a.src.localeCompare(b.src));
+                this.galleryImages = discoveredImages;
                 
                 if (this.galleryImages.length === 0) {
                     this.showNoImagesMessage();
                 } else {
-                    console.log(`🎉 Initial load: ${this.galleryImages.length} priority images`);
+                    console.log(`🎉 Loaded ${this.galleryImages.length} images`);
                     this.renderGallery();
                     this.hideLoading();
                 }
-            }
-
-            async loadRemainingImages(existingImages, foundPaths) {
-                console.log('⏳ Loading remaining images in background...');
-                
-                for (const imageName of this.commonImageNames) {
-                    for (const extension of this.imageExtensions) {
-                        const imagePath = `${this.galleryPath}${imageName}.${extension}`;
-                        
-                        if (foundPaths.has(imagePath)) continue;
-                        
-                        try {
-                            const exists = await this.imageExists(imagePath);
-                            if (exists) {
-                                const imageData = this.createImageData(imagePath, imageName);
-                                this.galleryImages.push(imageData);
-                                foundPaths.add(imagePath);
-                                
-                                // Add new image to gallery dynamically
-                                this.addImageToGallery(imageData, this.galleryImages.length - 1);
-                                console.log('✅ Background loaded:', imagePath);
-                                break;
-                            }
-                        } catch (error) {
-                            // Continue
-                        }
-                        
-                        // Small delay to prevent blocking
-                        await new Promise(resolve => setTimeout(resolve, 50));
-                    }
-                }
-                
-                console.log(`🎊 All loading complete: ${this.galleryImages.length} total images`);
-            }
-
-            addImageToGallery(imageData, index) {
-                const galleryItem = document.createElement('div');
-                galleryItem.className = `gallery-item ${imageData.featured ? 'featured' : ''}`;
-                galleryItem.style.opacity = '0';
-                galleryItem.style.transform = 'translateY(30px)';
-                galleryItem.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-
-                const img = document.createElement('img');
-                img.src = imageData.src;
-                img.alt = imageData.title;
-                img.loading = 'lazy';
-                img.decoding = 'async';
-                
-                img.onerror = () => {
-                    console.error(`Failed to load image: ${imageData.src}`);
-                    galleryItem.style.display = 'none';
-                };
-
-                const overlay = document.createElement('div');
-                overlay.className = 'overlay';
-
-                const title = document.createElement('div');
-                title.className = 'title';
-                title.textContent = imageData.title;
-
-                overlay.appendChild(title);
-                galleryItem.appendChild(img);
-                galleryItem.appendChild(overlay);
-
-                galleryItem.addEventListener('click', () => {
-                    this.openLightbox(this.galleryImages.findIndex(img => img.src === imageData.src));
-                });
-
-                this.galleryGrid.appendChild(galleryItem);
-
-                // Animate in
-                setTimeout(() => {
-                    galleryItem.style.opacity = '1';
-                    galleryItem.style.transform = 'translateY(0)';
-                }, 100);
             }
 
             imageExists(src) {
@@ -1129,11 +1027,10 @@
                     img.onload = () => resolve(true);
                     img.onerror = () => resolve(false);
                     
-                    // Reduced timeout for faster failures
                     const timeout = setTimeout(() => {
                         img.onload = img.onerror = null;
                         resolve(false);
-                    }, 1500); // Reduced from 3000ms
+                    }, 2000);
                     
                     img.onload = () => {
                         clearTimeout(timeout);
@@ -1150,14 +1047,9 @@
             }
 
             createImageData(imagePath, imageName) {
-                // Extract and format the title from filename
                 const title = this.formatTitle(imageName);
-                
-                // Generate description based on the image name
                 const description = this.generateDescription(imageName);
-                
-                // Determine if this should be a featured image (first numbered image or living room)
-                const featured = imageName.includes('01-') || imageName.includes('01-front');
+                const featured = imageName.includes('01-');
 
                 return {
                     src: imagePath,
@@ -1168,23 +1060,23 @@
             }
 
             formatTitle(imageName) {
-                // Remove numbers and convert dashes/underscores to spaces
                 let title = imageName
                     .replace(/^\d+-/, '') // Remove leading numbers
                     .replace(/[-_]/g, ' ') // Replace dashes and underscores with spaces
                     .replace(/\b\w/g, l => l.toUpperCase()); // Capitalize each word
 
-                // Handle special cases
                 const titleMappings = {
-                    'Living Room Main': 'Living Room',
-                    'Kitchen Overview': 'Kitchen',
-                    'Master Bedroom': 'Master Suite',
-                    'Exterior Front': 'Front Exterior',
-                    'Exterior Back': 'Back Exterior',
-                    'Bathroom 1': 'Main Bathroom',
-                    'Bathroom 2': 'Guest Bathroom',
-                    'Bedroom 2': 'Second Bedroom',
-                    'Bedroom 3': 'Third Bedroom'
+                    'Front': 'Front Exterior',
+                    'Living Room': 'Living Room',
+                    'Kitchen': 'Kitchen',
+                    'Dining': 'Dining Room',
+                    'Hallway': 'Hallway',
+                    'Bathroom': 'Bathroom',
+                    'Laundry': 'Laundry Room',
+                    'Master': 'Master Bedroom',
+                    'Bedroom': 'Bedroom',
+                    'Small Bedroom': 'Small Bedroom',
+                    'Backyard': 'Backyard'
                 };
 
                 return titleMappings[title] || title;
@@ -1192,71 +1084,37 @@
 
             generateDescription(imageName) {
                 const descriptions = {
-                    // Living spaces
-                    'living': 'Spacious and bright living area perfect for relaxation',
-                    'family-room': 'Comfortable family gathering space',
-                    'dining': 'Elegant dining area for entertaining guests',
-                    
-                    // Kitchen
-                    'kitchen': 'Modern kitchen with updated appliances and finishes',
-                    'appliances': 'Brand new stainless steel appliances',
-                    
-                    // Bedrooms
-                    'master-bedroom': 'Spacious master suite with walk-in closet',
-                    'bedroom': 'Comfortable bedroom with ample natural light',
-                    'guest': 'Welcoming guest accommodation',
-                    
-                    // Bathrooms
-                    'master-bathroom': 'Luxurious master bathroom with modern fixtures',
-                    'bathroom': 'Beautifully renovated bathroom space',
-                    'powder': 'Convenient powder room for guests',
-                    
-                    // Utility spaces
-                    'laundry': 'Dedicated laundry room with utility sink',
-                    'utility': 'Practical utility space for storage',
-                    'office': 'Perfect home office or study space',
-                    'garage': 'Attached garage with additional storage',
-                    
-                    // Exterior
-                    'exterior': 'Beautiful exterior with fresh paint and landscaping',
-                    'front': 'Attractive front entrance and curb appeal',
-                    'back': 'Private backyard space for outdoor enjoyment',
-                    'patio': 'Outdoor entertaining area',
-                    'deck': 'Spacious deck for outdoor dining',
-                    'yard': 'Well-maintained yard space'
-					
+                    '01-front': 'Beautiful front exterior with fresh paint and landscaping',
+                    '02-living room': 'Spacious living room with modern finishes',
+                    '03-living room': 'Bright and comfortable living space',
+                    '04-living room': 'Additional living room view',
+                    '05-kitchen': 'Modern kitchen with new stainless steel appliances',
+                    '06-kitchen': 'Kitchen featuring quartz countertops',
+                    '07-kitchen': 'Kitchen with new deep stainless steel sink',
+                    '08-kitchen': 'Complete kitchen renovation',
+                    '09-dining': 'Elegant dining area for entertaining',
+                    '10-hallway': 'Hallway with new laminate flooring',
+                    '11-bathroom': 'Updated bathroom with modern fixtures',
+                    '12-laundry': 'Laundry room with new utility sink',
+                    '13-master': 'Master bedroom with walk-in closet',
+                    '14-master': 'Master suite with new slider door',
+                    '15-bedroom': 'Comfortable bedroom with natural light',
+                    '16-small bedroom': 'Cozy bedroom perfect for office or guest room',
+                    '17-backyard': 'Fully fenced backyard space'
                 };
 
-                // Find matching description
-                for (const [key, description] of Object.entries(descriptions)) {
-                    if (imageName.toLowerCase().includes(key)) {
-                        return description;
-                    }
-                }
-
-                return 'Applying finishing touches to kitchen, main bath, and master bedroom';
+                return descriptions[imageName] || 'Beautiful interior space with modern upgrades';
             }
 
             renderGallery() {
                 this.galleryGrid.innerHTML = '';
                 
-                // Add class to indicate if we have featured images
                 const hasFeatured = this.galleryImages.some(img => img.featured);
                 if (hasFeatured) {
                     this.galleryGrid.classList.add('has-featured');
                 }
 
-                // Create a Set to track rendered images and prevent duplicates
-                const renderedImages = new Set();
-
                 this.galleryImages.forEach((imageData, index) => {
-                    // Prevent duplicate rendering
-                    if (renderedImages.has(imageData.src)) {
-                        console.warn(`Skipping duplicate image: ${imageData.src}`);
-                        return;
-                    }
-                    renderedImages.add(imageData.src);
-
                     const galleryItem = document.createElement('div');
                     galleryItem.className = `gallery-item ${imageData.featured ? 'featured' : ''}`;
                     galleryItem.style.opacity = '0';
@@ -1268,7 +1126,6 @@
                     img.alt = imageData.title;
                     img.loading = 'lazy';
                     
-                    // Add error handling for images
                     img.onerror = () => {
                         console.error(`Failed to load image: ${imageData.src}`);
                         galleryItem.style.display = 'none';
@@ -1291,19 +1148,15 @@
 
                     this.galleryGrid.appendChild(galleryItem);
 
-                    // Trigger animation
                     setTimeout(() => {
                         galleryItem.style.opacity = '1';
                         galleryItem.style.transform = 'translateY(0)';
                     }, index * 100);
                 });
 
-                // Show the gallery
                 setTimeout(() => {
                     this.galleryGrid.classList.add('loaded');
                 }, 500);
-                
-                console.log(`✅ Rendered ${renderedImages.size} unique images`);
             }
 
             hideLoading() {
@@ -1316,13 +1169,14 @@
                         <h3 style="margin-bottom: 20px; color: #1a1a1a;">No Gallery Images Found</h3>
                         <p style="margin-bottom: 20px;">To display your property photos, upload images to the <code>images/gallery/</code> folder.</p>
                         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: left; font-size: 0.9rem;">
-                            <strong>Supported file names:</strong><br>
+                            <strong>Expected file names:</strong><br>
                             • 01-front.jpg<br>
-                            • 02-kitchen-overview.jpg<br>
-                            • living-room-1.jpg<br>
-                            • kitchen-1.jpg<br>
-                            • master-bedroom.jpg<br>
-                            • exterior-front.jpg<br><br>
+                            • 02-living room.jpg<br>
+                            • 03-living room.jpg<br>
+                            • 05-kitchen.jpg<br>
+                            • 11-bathroom.jpg<br>
+                            • 13-master.jpg<br>
+                            • 17-backyard.jpg<br><br>
                             <strong>Supported formats:</strong> JPG, JPEG, PNG, WebP
                         </div>
                     </div>
@@ -1338,14 +1192,12 @@
                 lightboxPrev.addEventListener('click', () => this.showPrevImage());
                 lightboxNext.addEventListener('click', () => this.showNextImage());
 
-                // Close lightbox when clicking outside image
                 this.lightbox.addEventListener('click', (e) => {
                     if (e.target === this.lightbox) {
                         this.closeLightbox();
                     }
                 });
 
-                // Keyboard navigation
                 document.addEventListener('keydown', (e) => {
                     if (!this.lightbox.classList.contains('active')) return;
 
@@ -1397,7 +1249,6 @@
             }
 
             setupAnimations() {
-                // Navbar scroll effect
                 window.addEventListener('scroll', function() {
                     const navbar = document.querySelector('.navbar');
                     if (window.scrollY > 50) {
@@ -1409,7 +1260,6 @@
                     }
                 });
 
-                // Intersection Observer for animations
                 const observerOptions = {
                     threshold: 0.1,
                     rootMargin: '0px 0px -50px 0px'
@@ -1424,7 +1274,6 @@
                     });
                 }, observerOptions);
 
-                // Animate feature cards
                 const featureCards = document.querySelectorAll('.feature-card');
                 featureCards.forEach((card, index) => {
                     card.style.opacity = '0';
@@ -1433,7 +1282,6 @@
                     observer.observe(card);
                 });
 
-                // Animate detail cards
                 const detailCards = document.querySelectorAll('.details-card');
                 detailCards.forEach((card, index) => {
                     card.style.opacity = '0';
@@ -1444,13 +1292,11 @@
             }
         }
 
-        // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             new AutoGallery();
             setupEmailButton();
         });
 
-        // Enhanced email button functionality
         function setupEmailButton() {
             const emailButton = document.getElementById('emailButton');
             
@@ -1460,7 +1306,6 @@
         }
 
         function showEmailOptions() {
-            // Create modal overlay
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
@@ -1476,7 +1321,6 @@
                 padding: 20px;
             `;
 
-            // Create modal content
             const modalContent = document.createElement('div');
             modalContent.style.cssText = `
                 background: white;
@@ -1530,21 +1374,18 @@
             modal.appendChild(modalContent);
             document.body.appendChild(modal);
 
-            // Add click outside to close
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     closeEmailModal();
                 }
             });
 
-            // Store reference for closing
             window.currentEmailModal = modal;
         }
 
         function copyEmailToClipboard() {
             const email = 'max.perrigo@gmail.com';
             
-            // Modern clipboard API
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(email).then(function() {
                     showCopySuccess();
@@ -1552,7 +1393,6 @@
                     fallbackCopyTextToClipboard(email);
                 });
             } else {
-                // Fallback for older browsers
                 fallbackCopyTextToClipboard(email);
             }
         }
@@ -1582,7 +1422,6 @@
         }
 
         function showCopySuccess() {
-            // Update the copy button to show success
             const modal = window.currentEmailModal;
             if (modal) {
                 const copyButton = modal.querySelector('button[onclick="copyEmailToClipboard()"]');
