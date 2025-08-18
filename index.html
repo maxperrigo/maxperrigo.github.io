@@ -818,7 +818,7 @@
                     </div>
 					<div class="detail-row">
                         <span class="detail-label">Pets</span>
-                        <span class="detail-value">Conditional (Addtl Fees)</span>
+                        <span class="detail-value">Conditional (Addtional Fees/Rent)</span>
                     </div>
                 </div>
             </div>
@@ -1002,9 +1002,10 @@
                     '12-laundry',
                     '13-master',
                     '14-master',
-                    '15-bedroom',
-                    '16-small bedroom',
-                    '17-backyard'
+					'15-master',
+                    '16-bedroom',
+                    '17-small bedroom',
+                    '18-backyard'
                 ];
                 
                 this.init();
@@ -1115,22 +1116,23 @@
             generateDescription(imageName) {
                 const descriptions = {
                     '01-front': 'Beautiful front exterior with fresh paint and landscaping',
-                    '02-living room': 'Spacious living room with modern finishes',
-                    '03-living room': 'Bright and comfortable living space',
-                    '04-living room': 'Additional living room view',
+                    '02-living room': 'Spacious living room with wood burning stove',
+                    '03-living room': 'Front entrance into cozy living room',
+                    '04-living room': 'Bright and comfortable living space',
                     '05-kitchen': 'Modern kitchen with new stainless steel appliances',
                     '06-kitchen': 'Kitchen featuring quartz countertops',
-                    '07-kitchen': 'Kitchen with new deep stainless steel sink',
-                    '08-kitchen': 'Complete kitchen renovation',
-                    '09-dining': 'Elegant dining area for entertaining',
+                    '07-kitchen': 'Kitchen with new deep stainless steel fridge',
+                    '08-kitchen': 'Kraus stainless steel sink with cutting board and collander accessories',
+                    '09-dining': 'Cozy dining area for warm meals',
                     '10-hallway': 'Hallway with new laminate flooring',
                     '11-bathroom': 'Updated bathroom with modern fixtures',
-                    '12-laundry': 'Laundry room with new utility sink',
-                    '13-master': 'Master bedroom with walk-in closet',
-                    '14-master': 'Master suite with new slider door',
-                    '15-bedroom': 'Comfortable bedroom with natural light',
-                    '16-small bedroom': 'Cozy bedroom perfect for office or guest room',
-                    '17-backyard': 'Fully fenced backyard space'
+                    '12-laundry': 'Laundry room with new utility sink and washer/dryer',
+                    '13-master': 'Master bedroom with ',
+                    '14-master': 'Master bedroom with new slider door, vinyl curtains, and walk-in closet',
+					'15-master': 'New closet racking for walk in closet',
+                    '16-bedroom': 'Comfortable bedroom with natural light',
+                    '17-small bedroom': 'Cozy bedroom perfect for office or guest room',
+                    '18-backyard': 'Fully fenced backyard space'
                 };
 
                 return descriptions[imageName] || 'Beautiful interior space with modern upgrades';
