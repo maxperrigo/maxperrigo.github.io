@@ -21,7 +21,7 @@
 
         .navbar {
             position: fixed;
-            top: 0;
+            top: 48px;
             left: 0;
             right: 0;
             background: rgba(255, 255, 255, 0.95);
@@ -72,8 +72,16 @@
             transform: translateY(-1px);
         }
 
+        .nav-cta.disabled,
+        .btn.disabled {
+            opacity: 0.5;
+            /* allow pointer events so native tooltips (title) work */
+            cursor: not-allowed;
+            filter: grayscale(10%);
+        }
+
         .hero-section {
-            margin-top: 92px;
+            margin-top: 140px;
             padding: 80px 0;
             background: linear-gradient(135deg, rgba(45, 55, 72, 0.3) 0%, rgba(26, 32, 44, 0.4) 100%), 
                         url('images/hero/hero-background.jpg') center/cover;
@@ -83,6 +91,63 @@
             min-height: 600px;
             display: flex;
             align-items: center;
+        }
+
+        /* Top notification shown site-wide */
+        .top-notice {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            padding: 0 48px 0 16px;
+            gap: 12px;
+            transition: transform 220ms ease, opacity 220ms ease;
+        }
+
+        .top-notice__text {
+            flex: 1 1 auto;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .top-notice__close {
+            flex: 0 0 auto;
+            background: transparent;
+            border: none;
+            color: #1f2937;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 6px;
+        }
+
+        .top-notice__close:focus {
+            outline: 2px solid rgba(17,24,39,0.12);
+        }
+
+        /* When the banner is dismissed we slide it up and restore navbar/hero spacing */
+        body.banner-hidden .top-notice {
+            transform: translateY(-120%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        body.banner-hidden .navbar {
+            top: 0;
+        }
+
+        body.banner-hidden .hero-section {
+            margin-top: 92px;
         }
 
         .hero-section::before {
@@ -645,9 +710,13 @@
             }
             
             .hero-section {
-                margin-top: 82px;
+                margin-top: 130px;
                 padding: 60px 0;
                 min-height: 500px;
+            }
+
+            body.banner-hidden .hero-section {
+                margin-top: 82px;
             }
             
             .hero-content,
@@ -720,7 +789,11 @@
         }
     </style>
 </head>
-<body>
+    <body>
+    <div class="top-notice" id="topNotice" role="status" aria-live="polite">
+        <span class="top-notice__text">CURRENTLY UNAVAILABLE. AVAILABLE SEPTEMBER 2026</span>
+        <button class="top-notice__close" id="topNoticeClose" aria-label="Dismiss notice">✕</button>
+    </div>
     <nav class="navbar">
         <div class="nav-content">
             <svg class="logo" width="250" height="80" viewBox="0 0 250 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -737,7 +810,7 @@
               </g>
             </svg>
             <div class="nav-buttons">
-                <a href="https://calendar.app.google/9wXxz9eRLjzAdgbSA" class="nav-cta" target="_blank">Schedule Tour</a>
+                <a class="nav-cta disabled" aria-disabled="true" title="Scheduling will be available when end date for current lease is known">Schedule Tour</a>
                 <button class="nav-cta" id="navEmailButton">Send Message</button>
             </div>
         </div>
@@ -944,6 +1017,56 @@
         </section>
     </main>
 
+    <script>
+        (function(){
+            try {
+                var key = 'topNoticeDismissed_v1';
+                var dismissed = localStorage.getItem(key);
+                var body = document.body;
+                var notice = document.getElementById('topNotice');
+                var btn = document.getElementById('topNoticeClose');
+                if (dismissed === '1') {
+                    body.classList.add('banner-hidden');
+                }
+
+                function dismiss() {
+                    body.classList.add('banner-hidden');
+                    try { localStorage.setItem(key, '1'); } catch(e){}
+                }
+
+                if (btn) {
+                    btn.addEventListener('click', function(e){
+                        e.preventDefault();
+                        dismiss();
+                    });
+                }
+
+                // allow escape key to close
+                document.addEventListener('keydown', function(e){
+                    if ((e.key === 'Escape' || e.key === 'Esc') && !body.classList.contains('banner-hidden')) {
+                        dismiss();
+                    }
+                });
+                // Ensure disabled links remain non-interactive but still show tooltips
+                try {
+                    var disabledEls = document.querySelectorAll('.disabled[aria-disabled="true"]');
+                    disabledEls.forEach(function(el){
+                        el.addEventListener('click', function(e){ e.preventDefault(); });
+                        el.addEventListener('keydown', function(e){
+                            var key = e.key || e.keyCode;
+                            if (key === 'Enter' || key === ' ' || key === 'Spacebar' || key === 13 || key === 32) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }
+                        });
+                    });
+                } catch (e) {}
+            } catch (err) {
+                // silent fail — no critical behavior
+            }
+        })();
+    </script>
+
     <!-- Lightbox Modal -->
     <div class="lightbox" id="lightbox">
         <div class="lightbox-content">
@@ -964,7 +1087,7 @@
             <h2 class="cta-title">Ready to Call This Home?</h2>
             <p class="cta-subtitle">Don't wait – premium properties like this are in high demand. Schedule your private tour today.</p>
             <div class="cta-buttons">
-                <a href="https://calendar.app.google/9wXxz9eRLjzAdgbSA" class="btn btn-primary" target="_blank">
+                <a class="btn btn-primary disabled" aria-disabled="true" title="Scheduling will be available when end date for current lease is known">
                     📅 Schedule Tour
                 </a>
                 <div class="btn btn-secondary" id="emailButton">
