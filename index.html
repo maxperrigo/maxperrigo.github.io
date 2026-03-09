@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Luxury Rental - Fully Remodeled Rambler</title>
     <style>
+        :root {
+            --banner-height: 48px;
+            --navbar-height: 92px;
+            --navbar-height-mobile: 82px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -21,7 +27,7 @@
 
         .navbar {
             position: fixed;
-            top: 48px;
+            top: var(--banner-height);
             left: 0;
             right: 0;
             background: rgba(255, 255, 255, 0.95);
@@ -72,15 +78,15 @@
         }
 
         .nav-cta.disabled,
-        .btn.disabled {
+        .btn.disabled,
+        button:disabled {
             opacity: 0.5;
-            /* allow pointer events so native tooltips (title) work */
             cursor: not-allowed;
             filter: grayscale(10%);
         }
 
         .hero-section {
-            margin-top: 140px;
+            margin-top: calc(var(--banner-height) + var(--navbar-height));
             padding: 80px 0;
             background: linear-gradient(135deg, rgba(45, 55, 72, 0.3) 0%, rgba(26, 32, 44, 0.4) 100%), 
                         url('images/hero/hero-background.jpg') center/cover;
@@ -146,7 +152,7 @@
         }
 
         body.banner-hidden .hero-section {
-            margin-top: 92px;
+            margin-top: var(--navbar-height);
         }
 
         .hero-section::before {
@@ -688,13 +694,13 @@
             }
             
             .hero-section {
-                margin-top: 130px;
+                margin-top: calc(var(--banner-height) + var(--navbar-height-mobile));
                 padding: 60px 0;
                 min-height: 500px;
             }
 
             body.banner-hidden .hero-section {
-                margin-top: 82px;
+                margin-top: var(--navbar-height-mobile);
             }
             
             .hero-content,
@@ -788,7 +794,7 @@
               </g>
             </svg>
             <div class="nav-buttons">
-                <a class="nav-cta disabled" aria-disabled="true" title="Scheduling will be available when end date for current lease is known">Schedule Tour</a>
+                <button class="nav-cta disabled" disabled title="Scheduling will be available when end date for current lease is known">Schedule Tour</button>
                 <button class="nav-cta" id="navEmailButton">Send Message</button>
             </div>
         </div>
@@ -1064,12 +1070,12 @@
             <h2 class="cta-title">Ready to Call This Home?</h2>
             <p class="cta-subtitle">Don't wait – premium properties like this are in high demand. Schedule your private tour today.</p>
             <div class="cta-buttons">
-                <a class="btn btn-primary disabled" aria-disabled="true" title="Scheduling will be available when end date for current lease is known">
+                <button class="btn btn-primary disabled" disabled title="Scheduling will be available when end date for current lease is known">
                     📅 Schedule Tour
-                </a>
-                <div class="btn btn-secondary" id="emailButton">
+                </button>
+                <button class="btn btn-secondary" id="emailButton">
                     ✉️ Send Message
-                </div>
+                </button>
             </div>
         </div>
     </section>
@@ -1384,15 +1390,21 @@
             }
 
             setupAnimations() {
+                const navbar = document.querySelector('.navbar');
+                let rafPending = false;
                 window.addEventListener('scroll', function() {
-                    const navbar = document.querySelector('.navbar');
-                    if (window.scrollY > 50) {
-                        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
-                        navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-                    } else {
-                        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-                        navbar.style.boxShadow = 'none';
-                    }
+                    if (rafPending) return;
+                    rafPending = true;
+                    requestAnimationFrame(function() {
+                        if (window.scrollY > 50) {
+                            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+                        } else {
+                            navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                            navbar.style.boxShadow = 'none';
+                        }
+                        rafPending = false;
+                    });
                 });
 
                 const observerOptions = {
