@@ -1031,8 +1031,7 @@
                     disabledEls.forEach(function(el){
                         el.addEventListener('click', function(e){ e.preventDefault(); });
                         el.addEventListener('keydown', function(e){
-                            var key = e.key || e.keyCode;
-                            if (key === 'Enter' || key === ' ' || key === 'Spacebar' || key === 13 || key === 32) {
+                            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
                                 e.preventDefault();
                                 e.stopPropagation();
                             }
@@ -1161,24 +1160,22 @@
             imageExists(src) {
                 return new Promise((resolve) => {
                     const img = new Image();
-                    img.onload = () => resolve(true);
-                    img.onerror = () => resolve(false);
-                    
+
                     const timeout = setTimeout(() => {
                         img.onload = img.onerror = null;
                         resolve(false);
                     }, 2000);
-                    
+
                     img.onload = () => {
                         clearTimeout(timeout);
                         resolve(true);
                     };
-                    
+
                     img.onerror = () => {
                         clearTimeout(timeout);
                         resolve(false);
                     };
-                    
+
                     img.src = src;
                 });
             }
@@ -1432,25 +1429,13 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             new AutoGallery();
-            setupEmailButton();
-            setupNavEmailButton();
+            ['emailButton', 'navEmailButton'].forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('click', showEmailOptions);
+            });
         });
 
-        function setupEmailButton() {
-            const emailButton = document.getElementById('emailButton');
-            
-            emailButton.addEventListener('click', function() {
-                showEmailOptions();
-            });
-        }
-
-        function setupNavEmailButton() {
-            const navEmailButton = document.getElementById('navEmailButton');
-            
-            navEmailButton.addEventListener('click', function() {
-                showEmailOptions();
-            });
-        }
+        const CONTACT_EMAIL = 'max.perrigo@gmail.com';
 
         function showEmailOptions() {
             const modal = document.createElement('div');
@@ -1484,7 +1469,7 @@
                 <p style="margin-bottom: 30px; color: #666; line-height: 1.6;">Choose your preferred way to get in touch:</p>
                 
                 <div style="display: grid; gap: 15px; margin-bottom: 30px;">
-                    <button onclick="window.location.href='mailto:max.perrigo@gmail.com'" 
+                    <button onclick="window.location.href='mailto:${CONTACT_EMAIL}'"
                             style="background: #2d3748; color: white; padding: 15px 25px; border-radius: 8px; border: none; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background 0.2s ease;"
                             onmouseover="this.style.background='#4a5568'" 
                             onmouseout="this.style.background='#2d3748'">
@@ -1498,7 +1483,7 @@
                         📋 Copy Email Address
                     </button>
                     
-                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=max.perrigo@gmail.com&su=Rental%20Property%20Inquiry&body=Hi%20Max,%0D%0A%0D%0AI'm%20interested%20in%20learning%20more%20about%20your%20rental%20property%20at%20412%20W%2014th%20Ave,%20Ellensburg,%20WA%2098926.%0D%0A%0D%0APlease%20contact%20me%20at%20your%20earliest%20convenience.%0D%0A%0D%0AThank%20you!" 
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=Rental%20Property%20Inquiry&body=Hi%20Max,%0D%0A%0D%0AI'm%20interested%20in%20learning%20more%20about%20your%20rental%20property%20at%20412%20W%2014th%20Ave,%20Ellensburg,%20WA%2098926.%0D%0A%0D%0APlease%20contact%20me%20at%20your%20earliest%20convenience.%0D%0A%0D%0AThank%20you!" 
                        target="_blank"
                        style="background: #4285f4; color: white; padding: 15px 25px; border-radius: 8px; text-decoration: none; font-size: 1rem; font-weight: 500; transition: background 0.2s ease; display: block;"
                        onmouseover="this.style.background='#3367d6'" 
@@ -1510,7 +1495,7 @@
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                     <div style="margin-bottom: 10px;">
                         <strong style="color: #2d3748;">Email:</strong> 
-                        <span style="color: #2d3748; font-weight: 500; font-size: 1.1rem;">max.perrigo@gmail.com</span>
+                        <span style="color: #2d3748; font-weight: 500; font-size: 1.1rem;">${CONTACT_EMAIL}</span>
                     </div>
                     <div>
                         <strong style="color: #2d3748;">Property Address:</strong> 
@@ -1539,7 +1524,7 @@
         }
 
         function copyEmailToClipboard() {
-            const email = 'max.perrigo@gmail.com';
+            const email = CONTACT_EMAIL;
             
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(email).then(function() {
@@ -1596,7 +1581,7 @@
         }
 
         function showCopyError() {
-            alert('Unable to copy email. Please manually copy: max.perrigo@gmail.com');
+            alert('Unable to copy email. Please manually copy: ' + CONTACT_EMAIL);
         }
 
         function closeEmailModal() {
