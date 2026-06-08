@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.perrigorentals.com)",
+      "PowerShell(git config --global user.email \"max.perrigo@gmail.com\")",
+      "PowerShell(git config --global user.name \"Max Perrigo\")",
+      "PowerShell(git -C C:\\\\Users\\\\maxxe\\\\projects\\\\perrigorentals add .)",
+      "PowerShell(git -C C:\\\\Users\\\\maxxe\\\\projects\\\\perrigorentals commit -m \"Initial commit\")"
+    ]
+  }
+}
