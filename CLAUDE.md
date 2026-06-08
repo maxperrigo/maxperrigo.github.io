@@ -82,7 +82,7 @@ Use these when writing or editing site content — do not invent values.
 | Bathrooms | 1.5 |
 | Square Footage | 1,176 sq ft |
 | Lot Size | 7,000 sq ft |
-| Availability | Currently unavailable — available September 2026 |
+| Availability | Currently unavailable — available August 1, 2026 |
 | Pets | Conditional (additional fees/rent apply) |
 
 **Included in rent:** Trash/recycle pickup, single-car carport with storage
