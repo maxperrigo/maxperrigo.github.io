@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Luxury Rental - Fully Remodeled Rambler</title>
+    <style>
+        :root {
+            --banner-height: 48px;
+            --navbar-height: 92px;
+            --navbar-height-mobile: 82px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: var(--banner-height);
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        .logo {
+            height: 70px;
+            width: auto;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-cta {
+            background: #1a1a1a;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .nav-cta:hover {
+            background: #333;
+            transform: translateY(-1px);
+        }
+
+        .nav-cta.disabled,
+        .btn.disabled,
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(10%);
+        }
+
+        .hero-section {
+            margin-top: calc(var(--banner-height) + var(--navbar-height));
+            padding: 80px 0;
+            background: linear-gradient(135deg, rgba(45, 55, 72, 0.3) 0%, rgba(26, 32, 44, 0.4) 100%), 
+                        url('images/hero/hero-background.jpg') center/cover;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Top notification shown site-wide */
+        .top-notice {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            padding: 0 48px 0 16px;
+            gap: 12px;
+            transition: transform 220ms ease, opacity 220ms ease;
+        }
+
+        .top-notice__text {
+            flex: 1 1 auto;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .top-notice__close {
+            flex: 0 0 auto;
+            background: transparent;
+            border: none;
+            color: #1f2937;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 6px;
+        }
+
+        .top-notice__close:focus {
+            outline: 2px solid rgba(17,24,39,0.12);
+        }
+
+        /* When the banner is dismissed we slide it up and restore navbar/hero spacing */
+        body.banner-hidden .top-notice {
+            transform: translateY(-120%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        body.banner-hidden .navbar {
+            top: 0;
+        }
+
+        body.banner-hidden .hero-section {
+            margin-top: var(--navbar-height);
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-address {
+            font-size: 1.5rem;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 24px;
+            color: white;
+            letter-spacing: 0.025em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 32px;
+            max-width: 600px;
+            font-weight: 400;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .stat {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+
+        .gallery-section {
+            margin-bottom: 120px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .gallery-loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2d3748;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Ensure consistent grid behavior */
+        @media (min-width: 769px) {
+            .gallery-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .gallery-grid.has-featured {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .gallery-grid.loaded {
+            opacity: 1;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            aspect-ratio: 4/3;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-item .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .gallery-item .title {
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Special styling for first/featured image */
+        .gallery-item.featured {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .gallery-item.featured .title {
+            font-size: 1.5rem;
+        }
+
+        /* Lightbox styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lightbox img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-info {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            max-width: 500px;
+        }
+
+        .lightbox-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .lightbox-description {
+            font-size: 1rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -60px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+            z-index: 2001;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .lightbox-prev {
+            left: -60px;
+        }
+
+        .lightbox-next {
+            right: -60px;
+        }
+
+        .lightbox-counter {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .details-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            margin-bottom: 120px;
+        }
+
+        .details-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            background: #4a5568;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: #4a5568;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+        }
+
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .feature-description {
+            color: #666;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+
+        .cta-section {
+            background: #2d3748;
+            border-radius: 24px;
+            padding: 80px 60px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(74, 85, 104, 0.1) 0%, rgba(26, 32, 44, 0.1) 100%);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .cta-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.8;
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #2d3748;
+        }
+
+        .btn-primary:hover {
+            background: #f7fafc;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .price-highlight {
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .nav-content {
+                padding: 0 20px;
+                height: 50px;
+            }
+            
+            .logo {
+                height: 50px;
+                width: auto;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .nav-cta {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+            
+            .hero-section {
+                margin-top: calc(var(--banner-height) + var(--navbar-height-mobile));
+                padding: 60px 0;
+                min-height: 500px;
+            }
+
+            body.banner-hidden .hero-section {
+                margin-top: var(--navbar-height-mobile);
+            }
+            
+            .hero-content,
+            .main-content {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .notification-banner {
+                padding: 16px 20px;
+                margin-bottom: 30px;
+            }
+            
+            .notification-text {
+                font-size: 1rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-item.featured {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+            
+            .details-section {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-section {
+                padding: 60px 30px;
+                border-radius: 16px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .lightbox-nav {
+                position: fixed;
+                top: auto;
+                bottom: 20px;
+            }
+
+            .lightbox-prev {
+                left: 20px;
+            }
+
+            .lightbox-next {
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+    <body>
+    <div class="top-notice" id="topNotice" role="status" aria-live="polite">
+        <span class="top-notice__text">CURRENTLY UNAVAILABLE. AVAILABLE SEPTEMBER 2026</span>
+        <button class="top-notice__close" id="topNoticeClose" aria-label="Dismiss notice">✕</button>
+    </div>
+    <nav class="navbar">
+        <div class="nav-content">
+            <svg class="logo" width="250" height="80" viewBox="0 0 250 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <text x="15" y="45" font-family="Inter, sans-serif" font-size="30" font-weight="bold" fill="#1F2937">PERRIGO</text>
+              <text x="15" y="68" font-family="Inter, sans-serif" font-size="18" fill="#4B5563">RENTALS</text>
+              <g transform="translate(160, 20)">
+                <path d="M15 0 L30 15 V40 H0 V15 L15 0Z" fill="#3B82F6"/>
+                <rect x="12" y="25" width="6" height="10" fill="#BFDBFE"/>
+                <g transform="translate(0, -15) rotate(-20 40 35)">
+                  <rect x="35" y="25" width="5" height="20" rx="1" fill="#4B5563"/>
+                  <rect x="32.5" y="45" width="10" height="3" fill="#A0A0A0"/>
+                  <path d="M32.5 48 L42.5 48 L45.5 53 L29.5 53 L32.5 48 Z" fill="#000000"/>
+                </g>
+              </g>
+            </svg>
+            <div class="nav-buttons">
+                <button class="nav-cta disabled" disabled title="Scheduling will be available when end date for current lease is known">Schedule Tour</button>
+                <button class="nav-cta" id="navEmailButton">Send Message</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-badge">✨ NEWLY REMODELED</div>
+            <h1 class="hero-title">Modern Rambler Reimagined</h1>
+            <div class="hero-address">412 W 14th Ave</div>
+            <p class="hero-subtitle">Experience premium comfort in this completely renovated home featuring state-of-the-art appliances, new flooring, heaters, and custom countertops throughout.</p>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Bedrooms</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">1.5</div>
+                    <div class="stat-label">Bathrooms</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">1,176</div>
+                    <div class="stat-label">Sq Ft</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">$1,900</div>
+                    <div class="stat-label">Monthly</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <!--
+		<div class="notification-banner">
+            <p class="notification-text">💰 Discounts available! Inquire within to learn more!</p>
+        </div>
+		-->
+        
+        <section class="details-section">
+            <div class="details-card">
+                <h3 class="card-title">
+                    <span class="card-icon">🏠</span>
+                    Property Details
+                </h3>
+                <div class="detail-grid">
+                    <div class="detail-row">
+                        <span class="detail-label">Monthly Rent</span>
+                        <span class="detail-value price-highlight">$1,900</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Security Deposit</span>
+                        <span class="detail-value">$1,900</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Square Footage</span>
+                        <span class="detail-value">1,176 sq ft</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Bedrooms</span>
+                        <span class="detail-value">3</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Bathrooms</span>
+                        <span class="detail-value">1.5</span>
+                    </div>
+					<div class="detail-row">
+                        <span class="detail-label">Included Utilities</span>
+                        <span class="detail-value">Trash/Recycle</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Parking</span>
+                        <span class="detail-value">Carport</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Lot Size</span>
+                        <span class="detail-value">7,000 sq ft</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Available</span>
+                        <span class="detail-value">Immediately</span>
+                    </div>
+					<div class="detail-row">
+                        <span class="detail-label">Pets</span>
+                        <span class="detail-value">Conditional (Addtional Fees/Rent)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-card">
+                <h3 class="card-title">
+                    <span class="card-icon">⚡</span>
+                    Recent Upgrades
+                </h3>
+                <div class="detail-grid">
+                    <div class="detail-row">
+                        <span class="detail-label">Floors</span>
+                        <span class="detail-value">Mohawk Laminate Flooring</span>
+                    </div>
+					<div class="detail-row">
+                        <span class="detail-label">Kitchen Appliances</span>
+                        <span class="detail-value">New Stainless Steel</span>
+                    </div>
+					<div class="detail-row">
+                        <span class="detail-label">Kitchen Sink</span>
+                        <span class="detail-value">New S.S. Deep Sink</span>
+                    </div>
+					<div class="detail-row">
+                        <span class="detail-label">Countertops</span>
+                        <span class="detail-value">Quartz White 3CM</span>
+                    </div>
+					<div class="detail-row">
+                        <span class="detail-label">Exterior Paint</span>
+                        <span class="detail-value">New</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Interior Paint</span>
+                        <span class="detail-value">New</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Bathrooms</span>
+                        <span class="detail-value">Updated</span>
+                    </div>
+					<div class="detail-row">
+                        <span class="detail-label">Utility Sink</span>
+                        <span class="detail-value">Stainless Steel in Laundry</span>
+                    </div>
+					<div class="detail-row">
+                        <span class="detail-label">Primary Bedroom</span>
+                        <span class="detail-value">Walk-In Closet</span>
+                    </div>
+					<div class="detail-row">
+                        <span class="detail-label">Primary Bedroom</span>
+                        <span class="detail-value">New Slider</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Lighting</span>
+                        <span class="detail-value">LED Throughout</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">Premium Amenities</h2>
+                <p class="section-subtitle">Every detail designed for modern living</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔥</div>
+                    <h4 class="feature-title">Wood Stove</h4>
+                    <p class="feature-description">Save on electricity costs with a wood stove</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">❄️</div>
+                    <h4 class="feature-title">Climate Control</h4>
+                    <p class="feature-description">Individual heating systems in each room for customized comfort</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📶</div>
+                    <h4 class="feature-title">High-Speed Internet Ready!</h4>
+                    <p class="feature-description">Newer underground wiring for the fastest internet speeds available</p>
+                </div>
+				<div class="feature-card">
+                    <div class="feature-icon">🏠</div>
+                    <h4 class="feature-title">Fenced Back Yard</h4>
+                    <p class="feature-description">Fully Fenced Back Yard</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌳</div>
+                    <h4 class="feature-title">Landscaped Grounds</h4>
+                    <p class="feature-description">Professionally maintained landscaping</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚗</div>
+                    <h4 class="feature-title">Attached Carport</h4>
+                    <p class="feature-description">Single car carport with additional storage space</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h4 class="feature-title">Prime Location</h4>
+                    <p class="feature-description">Walking distance to Central Washington University, downtown, and more!</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="gallery-section">
+            <div class="section-header">
+                <h2 class="section-title">Virtual Tour</h2>
+                <p class="section-subtitle">Explore every corner of your future home through our immersive gallery</p>
+            </div>
+            
+            <div class="gallery-loading" id="galleryLoading">
+                <div class="loading-spinner"></div>
+                <p>Loading gallery images...</p>
+            </div>
+            
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Images will be automatically discovered and loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function(){
+            try {
+                var key = 'topNoticeDismissed_v1';
+                var dismissed = localStorage.getItem(key);
+                var body = document.body;
+                var notice = document.getElementById('topNotice');
+                var btn = document.getElementById('topNoticeClose');
+                if (dismissed === '1') {
+                    body.classList.add('banner-hidden');
+                }
+
+                function dismiss() {
+                    body.classList.add('banner-hidden');
+                    try { localStorage.setItem(key, '1'); } catch(e){}
+                }
+
+                if (btn) {
+                    btn.addEventListener('click', function(e){
+                        e.preventDefault();
+                        dismiss();
+                    });
+                }
+
+                // allow escape key to close
+                document.addEventListener('keydown', function(e){
+                    if ((e.key === 'Escape' || e.key === 'Esc') && !body.classList.contains('banner-hidden')) {
+                        dismiss();
+                    }
+                });
+                // Ensure disabled links remain non-interactive but still show tooltips
+                try {
+                    var disabledEls = document.querySelectorAll('.disabled[aria-disabled="true"]');
+                    disabledEls.forEach(function(el){
+                        el.addEventListener('click', function(e){ e.preventDefault(); });
+                        el.addEventListener('keydown', function(e){
+                            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                                e.preventDefault();
+                                e.stopPropagation();
+                            }
+                        });
+                    });
+                } catch (e) {}
+            } catch (err) {
+                // silent fail — no critical behavior
+            }
+        })();
+    </script>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose">&times;</button>
+            <button class="lightbox-nav lightbox-prev" id="lightboxPrev">&#8249;</button>
+            <img id="lightboxImage" src="" alt="">
+            <button class="lightbox-nav lightbox-next" id="lightboxNext">&#8250;</button>
+            <div class="lightbox-counter" id="lightboxCounter">1 / 10</div>
+            <div class="lightbox-info" id="lightboxInfo">
+                <div class="lightbox-title" id="lightboxTitle">Image Title</div>
+                <div class="lightbox-description" id="lightboxDescription">Image description</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="cta-section" id="contact">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to Call This Home?</h2>
+            <p class="cta-subtitle">Don't wait – premium properties like this are in high demand. Schedule your private tour today.</p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary disabled" disabled title="Scheduling will be available when end date for current lease is known">
+                    📅 Schedule Tour
+                </button>
+                <button class="btn btn-secondary" id="emailButton">
+                    ✉️ Send Message
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Streamlined Gallery System
+        class AutoGallery {
+            constructor() {
+                this.galleryGrid = document.getElementById('galleryGrid');
+                this.galleryLoading = document.getElementById('galleryLoading');
+                this.lightbox = document.getElementById('lightbox');
+                this.lightboxImage = document.getElementById('lightboxImage');
+                this.lightboxTitle = document.getElementById('lightboxTitle');
+                this.lightboxDescription = document.getElementById('lightboxDescription');
+                this.lightboxCounter = document.getElementById('lightboxCounter');
+                
+                this.galleryImages = [];
+                this.currentImageIndex = 0;
+                
+                // Specific image names to look for
+                this.imageExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+                this.galleryPath = 'images/gallery/';
+                this.specificImageNames = [
+                    '01-front',
+                    '02-living room',
+                    '03-living room',
+                    '04-living room',
+                    '05-kitchen',
+                    '06-kitchen',
+                    '07-kitchen',
+                    '08-kitchen',
+                    '09-dining',
+                    '10-hallway',
+                    '11-bathroom',
+                    '12-laundry',
+                    '13-master',
+                    '14-master',
+					'15-master',
+                    '16-bedroom',
+                    '17-small bedroom',
+                    '18-backyard'
+                ];
+                
+                this.init();
+            }
+
+            async init() {
+                console.log('🔍 Starting image discovery...');
+                await this.discoverImages();
+                this.setupLightbox();
+                this.setupAnimations();
+            }
+
+            async discoverImages() {
+                const discoveredImages = [];
+                
+                console.log('🔍 Looking for specific images...');
+                
+                for (const imageName of this.specificImageNames) {
+                    for (const extension of this.imageExtensions) {
+                        const imagePath = `${this.galleryPath}${imageName}.${extension}`;
+                        
+                        try {
+                            const exists = await this.imageExists(imagePath);
+                            if (exists) {
+                                const imageData = this.createImageData(imagePath, imageName);
+                                discoveredImages.push(imageData);
+                                console.log('✅ Found:', imagePath);
+                                break; // Found this image, move to next name
+                            }
+                        } catch (error) {
+                            // Continue to next extension
+                        }
+                    }
+                }
+                
+                this.galleryImages = discoveredImages;
+                
+                if (this.galleryImages.length === 0) {
+                    this.showNoImagesMessage();
+                } else {
+                    console.log(`🎉 Loaded ${this.galleryImages.length} images`);
+                    this.renderGallery();
+                    this.hideLoading();
+                }
+            }
+
+            imageExists(src) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+
+                    const timeout = setTimeout(() => {
+                        img.onload = img.onerror = null;
+                        resolve(false);
+                    }, 2000);
+
+                    img.onload = () => {
+                        clearTimeout(timeout);
+                        resolve(true);
+                    };
+
+                    img.onerror = () => {
+                        clearTimeout(timeout);
+                        resolve(false);
+                    };
+
+                    img.src = src;
+                });
+            }
+
+            createImageData(imagePath, imageName) {
+                const title = this.formatTitle(imageName);
+                const description = this.generateDescription(imageName);
+                const featured = imageName.includes('01-');
+
+                return {
+                    src: imagePath,
+                    title: title,
+                    description: description,
+                    featured: featured
+                };
+            }
+
+            formatTitle(imageName) {
+                let title = imageName
+                    .replace(/^\d+-/, '') // Remove leading numbers
+                    .replace(/[-_]/g, ' ') // Replace dashes and underscores with spaces
+                    .replace(/\b\w/g, l => l.toUpperCase()); // Capitalize each word
+
+                const titleMappings = {
+                    'Front': 'Front Exterior',
+                    'Living Room': 'Living Room',
+                    'Kitchen': 'Kitchen',
+                    'Dining': 'Dining Room',
+                    'Hallway': 'Hallway',
+                    'Bathroom': 'Bathroom',
+                    'Laundry': 'Laundry Room',
+                    'Master': 'Master Bedroom',
+                    'Bedroom': 'Bedroom',
+                    'Small Bedroom': 'Small Bedroom',
+                    'Backyard': 'Backyard'
+                };
+
+                return titleMappings[title] || title;
+            }
+
+            generateDescription(imageName) {
+                const descriptions = {
+                    '01-front': 'Beautiful front exterior with fresh paint and landscaping',
+                    '02-living room': 'Spacious living room with wood burning stove',
+                    '03-living room': 'Front entrance into cozy living room',
+                    '04-living room': 'Bright and comfortable living space',
+                    '05-kitchen': 'Modern kitchen with new stainless steel appliances',
+                    '06-kitchen': 'Kitchen featuring quartz countertops',
+                    '07-kitchen': 'Kitchen with new deep stainless steel fridge',
+                    '08-kitchen': 'Kraus stainless steel sink with cutting board and collander accessories',
+                    '09-dining': 'Cozy dining area for warm meals',
+                    '10-hallway': 'Hallway with new laminate flooring',
+                    '11-bathroom': 'Updated bathroom with modern fixtures',
+                    '12-laundry': 'Laundry room with new utility sink and washer/dryer',
+                    '13-master': 'Master bedroom with ',
+                    '14-master': 'Master bedroom with new slider door, vinyl curtains, and walk-in closet',
+					'15-master': 'New closet racking for walk in closet',
+                    '16-bedroom': 'Comfortable bedroom with natural light',
+                    '17-small bedroom': 'Cozy bedroom perfect for office or guest room',
+                    '18-backyard': 'Fully fenced backyard space'
+                };
+
+                return descriptions[imageName] || 'Beautiful interior space with modern upgrades';
+            }
+
+            renderGallery() {
+                this.galleryGrid.innerHTML = '';
+                
+                const hasFeatured = this.galleryImages.some(img => img.featured);
+                if (hasFeatured) {
+                    this.galleryGrid.classList.add('has-featured');
+                }
+
+                this.galleryImages.forEach((imageData, index) => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = `gallery-item ${imageData.featured ? 'featured' : ''}`;
+                    galleryItem.style.opacity = '0';
+                    galleryItem.style.transform = 'translateY(30px)';
+                    galleryItem.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+
+                    const img = document.createElement('img');
+                    img.src = imageData.src;
+                    img.alt = imageData.title;
+                    img.loading = 'lazy';
+                    
+                    img.onerror = () => {
+                        console.error(`Failed to load image: ${imageData.src}`);
+                        galleryItem.style.display = 'none';
+                    };
+
+                    const overlay = document.createElement('div');
+                    overlay.className = 'overlay';
+
+                    const title = document.createElement('div');
+                    title.className = 'title';
+                    title.textContent = imageData.title;
+
+                    overlay.appendChild(title);
+                    galleryItem.appendChild(img);
+                    galleryItem.appendChild(overlay);
+
+                    galleryItem.addEventListener('click', () => {
+                        this.openLightbox(index);
+                    });
+
+                    this.galleryGrid.appendChild(galleryItem);
+
+                    setTimeout(() => {
+                        galleryItem.style.opacity = '1';
+                        galleryItem.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+
+                setTimeout(() => {
+                    this.galleryGrid.classList.add('loaded');
+                }, 500);
+            }
+
+            hideLoading() {
+                this.galleryLoading.style.display = 'none';
+            }
+
+            showNoImagesMessage() {
+                this.galleryLoading.innerHTML = `
+                    <div style="max-width: 600px; margin: 0 auto; text-align: center; color: #666;">
+                        <h3 style="margin-bottom: 20px; color: #1a1a1a;">No Gallery Images Found</h3>
+                        <p style="margin-bottom: 20px;">To display your property photos, upload images to the <code>images/gallery/</code> folder.</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: left; font-size: 0.9rem;">
+                            <strong>Expected file names:</strong><br>
+                            • 01-front.jpg<br>
+                            • 02-living room.jpg<br>
+                            • 03-living room.jpg<br>
+                            • 05-kitchen.jpg<br>
+                            • 11-bathroom.jpg<br>
+                            • 13-master.jpg<br>
+                            • 17-backyard.jpg<br><br>
+                            <strong>Supported formats:</strong> JPG, JPEG, PNG, WebP
+                        </div>
+                    </div>
+                `;
+            }
+
+            setupLightbox() {
+                const lightboxClose = document.getElementById('lightboxClose');
+                const lightboxPrev = document.getElementById('lightboxPrev');
+                const lightboxNext = document.getElementById('lightboxNext');
+
+                lightboxClose.addEventListener('click', () => this.closeLightbox());
+                lightboxPrev.addEventListener('click', () => this.showPrevImage());
+                lightboxNext.addEventListener('click', () => this.showNextImage());
+
+                this.lightbox.addEventListener('click', (e) => {
+                    if (e.target === this.lightbox) {
+                        this.closeLightbox();
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (!this.lightbox.classList.contains('active')) return;
+
+                    switch(e.key) {
+                        case 'Escape':
+                            this.closeLightbox();
+                            break;
+                        case 'ArrowLeft':
+                            this.showPrevImage();
+                            break;
+                        case 'ArrowRight':
+                            this.showNextImage();
+                            break;
+                    }
+                });
+            }
+
+            openLightbox(index) {
+                this.currentImageIndex = index;
+                this.updateLightboxContent();
+                this.lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeLightbox() {
+                this.lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+
+            showPrevImage() {
+                this.currentImageIndex = this.currentImageIndex > 0 ? 
+                    this.currentImageIndex - 1 : this.galleryImages.length - 1;
+                this.updateLightboxContent();
+            }
+
+            showNextImage() {
+                this.currentImageIndex = this.currentImageIndex < this.galleryImages.length - 1 ? 
+                    this.currentImageIndex + 1 : 0;
+                this.updateLightboxContent();
+            }
+
+            updateLightboxContent() {
+                const currentImage = this.galleryImages[this.currentImageIndex];
+                this.lightboxImage.src = currentImage.src;
+                this.lightboxImage.alt = currentImage.title;
+                this.lightboxTitle.textContent = currentImage.title;
+                this.lightboxDescription.textContent = currentImage.description;
+                this.lightboxCounter.textContent = `${this.currentImageIndex + 1} / ${this.galleryImages.length}`;
+            }
+
+            setupAnimations() {
+                const navbar = document.querySelector('.navbar');
+                let rafPending = false;
+                window.addEventListener('scroll', function() {
+                    if (rafPending) return;
+                    rafPending = true;
+                    requestAnimationFrame(function() {
+                        if (window.scrollY > 50) {
+                            navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                            navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+                        } else {
+                            navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                            navbar.style.boxShadow = 'none';
+                        }
+                        rafPending = false;
+                    });
+                });
+
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, observerOptions);
+
+                const featureCards = document.querySelectorAll('.feature-card');
+                featureCards.forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(30px)';
+                    card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                    observer.observe(card);
+                });
+
+                const detailCards = document.querySelectorAll('.details-card');
+                detailCards.forEach((card, index) => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(' + (index % 2 === 0 ? '-30px' : '30px') + ')';
+                    card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                    observer.observe(card);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new AutoGallery();
+            ['emailButton', 'navEmailButton'].forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('click', showEmailOptions);
+            });
+        });
+
+        const CONTACT_EMAIL = 'max.perrigo@gmail.com';
+
+        function showEmailOptions() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 3000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            `;
+
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: white;
+                border-radius: 16px;
+                padding: 40px;
+                max-width: 500px;
+                width: 100%;
+                text-align: center;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            `;
+
+            modalContent.innerHTML = `
+                <h3 style="margin-bottom: 20px; color: #1a1a1a; font-size: 1.5rem;">Contact Max Perrigo</h3>
+                <p style="margin-bottom: 30px; color: #666; line-height: 1.6;">Choose your preferred way to get in touch:</p>
+                
+                <div style="display: grid; gap: 15px; margin-bottom: 30px;">
+                    <button onclick="window.location.href='mailto:${CONTACT_EMAIL}'"
+                            style="background: #2d3748; color: white; padding: 15px 25px; border-radius: 8px; border: none; cursor: pointer; font-size: 1rem; font-weight: 500; transition: background 0.2s ease;"
+                            onmouseover="this.style.background='#4a5568'" 
+                            onmouseout="this.style.background='#2d3748'">
+                        📧 Open Email App
+                    </button>
+                    
+                    <button onclick="copyEmailToClipboard()" 
+                            style="background: #f8f9fa; color: #2d3748; padding: 15px 25px; border-radius: 8px; border: 2px solid #e9ecef; cursor: pointer; font-size: 1rem; font-weight: 500; transition: all 0.2s ease;"
+                            onmouseover="this.style.background='#e9ecef'" 
+                            onmouseout="this.style.background='#f8f9fa'">
+                        📋 Copy Email Address
+                    </button>
+                    
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=Rental%20Property%20Inquiry&body=Hi%20Max,%0D%0A%0D%0AI'm%20interested%20in%20learning%20more%20about%20your%20rental%20property%20at%20412%20W%2014th%20Ave,%20Ellensburg,%20WA%2098926.%0D%0A%0D%0APlease%20contact%20me%20at%20your%20earliest%20convenience.%0D%0A%0D%0AThank%20you!" 
+                       target="_blank"
+                       style="background: #4285f4; color: white; padding: 15px 25px; border-radius: 8px; text-decoration: none; font-size: 1rem; font-weight: 500; transition: background 0.2s ease; display: block;"
+                       onmouseover="this.style.background='#3367d6'" 
+                       onmouseout="this.style.background='#4285f4'">
+                        📮 Gmail (Web)
+                    </a>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <div style="margin-bottom: 10px;">
+                        <strong style="color: #2d3748;">Email:</strong> 
+                        <span style="color: #2d3748; font-weight: 500; font-size: 1.1rem;">${CONTACT_EMAIL}</span>
+                    </div>
+                    <div>
+                        <strong style="color: #2d3748;">Property Address:</strong> 
+                        <span style="color: #2d3748; font-weight: 500;">412 W 14th Ave, Ellensburg, WA 98926</span>
+                    </div>
+                </div>
+                
+                <button onclick="closeEmailModal()" 
+                        style="background: transparent; color: #2d3748; padding: 10px 20px; border-radius: 6px; border: 2px solid #2d3748; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.2s ease;"
+						onmouseover="this.style.background='#2d3748'; this.style.color='white'" 
+						onmouseout="this.style.background='transparent'; this.style.color='#2d3748'">
+                    Cancel
+                </button>
+            `;
+
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeEmailModal();
+                }
+            });
+
+            window.currentEmailModal = modal;
+        }
+
+        function copyEmailToClipboard() {
+            const email = CONTACT_EMAIL;
+            
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(email).then(function() {
+                    showCopySuccess();
+                }).catch(function(err) {
+                    fallbackCopyTextToClipboard(email);
+                });
+            } else {
+                fallbackCopyTextToClipboard(email);
+            }
+        }
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess();
+                } else {
+                    showCopyError();
+                }
+            } catch (err) {
+                showCopyError();
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showCopySuccess() {
+            const modal = window.currentEmailModal;
+            if (modal) {
+                const copyButton = modal.querySelector('button[onclick="copyEmailToClipboard()"]');
+                if (copyButton) {
+                    const originalText = copyButton.innerHTML;
+                    copyButton.innerHTML = '✅ Email Copied!';
+                    copyButton.style.background = '#10b981';
+                    copyButton.style.color = 'white';
+                    
+                    setTimeout(() => {
+                        copyButton.innerHTML = originalText;
+                        copyButton.style.background = '#f8f9fa';
+                        copyButton.style.color = '#2d3748';
+                    }, 2000);
+                }
+            }
+        }
+
+        function showCopyError() {
+            alert('Unable to copy email. Please manually copy: ' + CONTACT_EMAIL);
+        }
+
+        function closeEmailModal() {
+            if (window.currentEmailModal) {
+                document.body.removeChild(window.currentEmailModal);
+                window.currentEmailModal = null;
+            }
+        }
+    </script>
+</body>
+</html>
